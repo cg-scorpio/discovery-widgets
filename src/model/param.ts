@@ -157,11 +157,6 @@ export class Param {
     onTop?: boolean,
     stickyHeader?: boolean,
     stripped?: boolean
-    borders?: {
-      width: string,
-      color: string
-    },
-    cellAlign?: string;
   };
   gauge?: {
     horizontal?: boolean,
