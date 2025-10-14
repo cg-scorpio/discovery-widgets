@@ -43,7 +43,7 @@ export class DiscoveryPageable {
   @Prop() debug = false;
   @Prop() divider: number;
   @Prop() data: Dataset;
-  @Prop() options: Param = {...new Param(), tabular: {stripped: true}};
+  @Prop() options: Param = {...new Param()};
   @Prop({ mutable: true }) params: Param[] = [];
   @Prop({ mutable: true }) elemsCount = 15;
   @Prop({ mutable: true }) windowed = 5;
@@ -76,7 +76,7 @@ export class DiscoveryPageable {
       opts = JSON.parse(newValue);
     }
     if (!Utils.deepEqual(opts, this.innerOptions)) {
-      this.innerOptions = Utils.clone({ ...new Param(), tabular: {stripped: true}, ...opts });
+      this.innerOptions = Utils.clone({ ...new Param(), ...opts });
       this.drawGridData();
       this.LOG?.debug(['optionsUpdate 2'], { options: this.innerOptions, newValue, oldValue });
     }
@@ -96,7 +96,7 @@ export class DiscoveryPageable {
   // noinspection JSUnusedGlobalSymbols
   componentWillLoad() {
     this.LOG = new Logger(DiscoveryPageable, this.debug);
-    this.innerOptions = Utils.clone({ ...new Param(), tabular: {stripped: true}, ...this.options });
+    this.innerOptions = Utils.clone({ ...new Param(), ...this.options });
     this.drawGridData();
   }
 
@@ -310,7 +310,7 @@ export class DiscoveryPageable {
         </thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
-          <tr class={this.innerOptions.tabular.stripped ? (i % 2 === 0 ? 'odd' : 'even') : ''}
+          <tr class={this.innerOptions.tabular?.stripped ? (i % 2 === 0 ? 'odd' : 'even') : ''}
               onClick={() => this.setSelected(value)}
               onMouseOver={() => this.setOver(value)}
               style={this.getRowStyle(i)}
@@ -331,6 +331,8 @@ export class DiscoveryPageable {
       if (!GTSLib.isArray(this.data.params[h])) {
         styles.backgroundColor = this.data.params[h].bgColor;
         styles.color = this.data.params[h].fontColor;
+        styles.border = this.data.params[h].border;
+        styles.textAlign = this.data.params[h].cellAlign;
       }
     }
     return styles;
