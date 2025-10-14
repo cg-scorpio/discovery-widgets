@@ -280,7 +280,10 @@ export class DiscoveryPageable {
     return <div>
       <div class="heading" innerHTML={DiscoveryPageable.formatLabel(this.data.name)} />
       {this.innerOptions?.tabular?.onTop ? this.getPagination() : ''}
-      <table class={this.innerOptions?.tabular?.stickyHeader ? 'sortable nospace' : 'sortable'}>
+      <table class={this.innerOptions?.tabular?.stickyHeader ? 'sortable nospace' : 'sortable'}
+             style={{
+               borderCollapse: 'collapse'
+             }}>
         <thead class={this.innerOptions?.tabular?.stickyHeader ? 'stickyHeader' : ''}>
         <tr>
           {this.data.headers.map((header, i) =>
@@ -289,6 +292,7 @@ export class DiscoveryPageable {
               class={this.getClasses(i)}
               onClick={() => this.sort(i)}
               style={{
+                ...this.getHeaderStyle(i),
                 width: this.innerOptions.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto',
               }}>{header}</th>)
           }
@@ -297,19 +301,21 @@ export class DiscoveryPageable {
           {this.innerOptions?.tabular?.filterable ? this.data.headers.map((_header, i) =>
               <th
                 data-filter={i} style={{
+                ...this.getHeaderStyle(i),
                 width: this.innerOptions.tabular?.fixedWidth ? `${(100 / this.data.headers.length)}%` : 'auto',
-              }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)} /></th>)
+              }}><input type="text" class="discovery-input" onInput={e => this.filter(i, e)}/></th>)
             : ''
           }
         </tr>
         </thead>
         <tbody>
         {this.displayedValues.map((value, i) =>
-          <tr class={this.innerOptions.tabular.stripped ? (i % 2 === 0 ? 'odd' : 'even'): ''} onClick={() => this.setSelected(value)}
+          <tr class={this.innerOptions.tabular.stripped ? (i % 2 === 0 ? 'odd' : 'even') : ''}
+              onClick={() => this.setSelected(value)}
               onMouseOver={() => this.setOver(value)}
               style={this.getRowStyle(i)}
           >{value.map((v, j) =>
-            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit ?? '')} /></td>,
+            <td style={this.getCellStyle(i, j)}><span innerHTML={v.display + (v.unit ?? '')}/></td>,
           )}</tr>,
         )}
         </tbody>
@@ -330,17 +336,35 @@ export class DiscoveryPageable {
     return styles;
   }
 
+  private getHeaderStyle(cell: number) {
+    const h = 'headers';
+    const styles: any = {};
+    if (this.data.params && this.data.params[h]) {
+      if (GTSLib.isArray(this.data.params[h]) && this.data.params[h][cell]) {
+        styles.backgroundColor = this.data.params[h][cell].bgColor;
+        styles.color = this.data.params[h][cell].fontColor;
+        styles.border = this.data.params[h][cell].border;
+        styles.textAlign = this.data.params[h][cell].cellAlign;
+      }
+    }
+    return styles;
+  }
+
   private getCellStyle(row: number, cell: number) {
     const h = this.data.values[row][0];
     const styles: any = {};
     if(this.filteredDataset[row][cell]) {
       styles.backgroundColor = (this.filteredDataset[row][cell] as any).bgColor;
       styles.color = (this.filteredDataset[row][cell] as any).fontColor;
+      styles.border = (this.filteredDataset[row][cell] as any).border;
+      styles.textAlign = (this.filteredDataset[row][cell] as any).cellAlign;
     }
     if (this.data.params && this.data.params[h]) {
       if (GTSLib.isArray(this.data.params[h]) && this.data.params[h][cell]) {
         styles.backgroundColor = this.data.params[h][cell].bgColor;
         styles.color = this.data.params[h][cell].fontColor;
+        styles.border = this.data.params[h][cell].border;
+        styles.textAlign = this.data.params[h][cell].cellAlign;
       }
     }
     return styles;
