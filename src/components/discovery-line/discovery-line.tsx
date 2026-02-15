@@ -1313,7 +1313,6 @@ export class DiscoveryLineComponent {
     let table = `<table style="width:100%; border-collapse: collapse; font-family: monospace; color: ${textColor}; background-color: ${textAreaColor};">`;
     table += `<thead><tr style="border-bottom: 2px solid ${textAreaBorderColor};">`;
 
-    // Format colonnes/lignes
     if (isColumnsFormat && columns && rows) {
       table += `<th style="text-align:left; padding: 8px; color: ${textColor};"></th>`;
       columns.forEach((column) => {
@@ -1339,7 +1338,6 @@ export class DiscoveryLineComponent {
       return table;
     }
 
-    // Format GTS
     if (series.length === 0) {
       return '<p>Aucune donnée à afficher</p>';
     }
